@@ -10,7 +10,7 @@ html(lang=lang.replace(/_.*$/,""))
     block head
       
       //- Title and description
-      - let title = (page.title ? page.title : "") + (siteinfo.info || "My Site");
+      - let title = (page.title ? page.title : "") + (siteinfo.name || "My Site");
       - let desc = page.description || siteinfo.description || "";
       title #{title}
       meta(name="description" content=desc)
@@ -24,7 +24,7 @@ html(lang=lang.replace(/_.*$/,""))
       meta(name="copyright" content=copyright)
 
 
-      - let url = page.url || ""
+      - let url = page.url || "/"
       - let mainImage = page.mainImage || siteinfo.mainImage || ""
       //- OPENGRAPH Tags (Facebook: https://developers.facebook.com/docs/sharing/webmasters)
       meta(property="og:locale" content=lang)
