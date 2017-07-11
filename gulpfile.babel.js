@@ -55,10 +55,12 @@ gulp.task('images', () => {
   .pipe($.if(                       // PIPE: Makes resized and webp versions
     (filename) => ((filename+"").indexOf("-noresize")==-1),
     $.responsive(responsiveConfig[0],responsiveConfig[1])))
-  .pipe($.imagemin({                // PIPE: Optimize all images
-    progressive: true,
-    interlaced: true
-  }))
+  .pipe($.imagemin([
+    $.imagemin.gifsicle({interlaced: true}),
+    $.imagemin.jpegtran({progressive: true}),
+    $.imagemin.optipng({optimizationLevel: 5}),
+    $.imagemin.svgo({plugins: [{removeViewBox: true}]})
+  ]))
   .pipe(gulp.dest('dist/images'))   // PIPE: Copy files over to 'dist' folder.
   .pipe($.size({title: 'images'})); // PIPE: Report total size of files.
 });
@@ -172,7 +174,7 @@ gulp.task('html', () => {
   .pipe($.save('html'))           // PIPE: Save Pipe for later use
     .pipe($.sitemap({               // PIPE: Generate sitemap
       siteUrl: 'https://example.com',
-      lastmod: (file) => new Date(file.stat.mtime)
+      lastmod: (f) => new Date(f.stat.mtime)
     }))   
     .pipe(gulp.dest('./dist'))      // PIPE: Save sitemap to 'dist'
   .pipe($.save.restore('html'))     // PIPE: Restore old Pipe
