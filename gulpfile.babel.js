@@ -185,6 +185,7 @@ gulp.task('html', () => {
         let cmd = 'git log -n 1 --pretty=format:%aI -- "' + path + '"';
         let res = child_process.execSync(cmd).toString();
         if(res === "") throw "Error: Git does not have "+path;
+        console.log(res);
         return res;
       }
       ,
@@ -236,7 +237,7 @@ gulp.task('serve', ['build:dev'], () => {
     scrollElementMapping: ['main'],   // Sync scrollTop of specified elements
     https: false,                      // Enable https? (selfsigned certificates)
     server: {
-      baseDir: ['.tmp', 'dist'],         // What to serve?
+      baseDir: ['.tmp', 'dist'],
       serveStaticOptions: {
         extensions: ['html']
       }

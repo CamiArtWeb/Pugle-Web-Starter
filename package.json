@@ -47,9 +47,9 @@
     "node": ">=4"
   },
   "scripts": {
-    "build": "gulp",
-    "build:production": "gulp build:prod",
-    "build:development": "gulp build:dev",
+    "build": "npm run build:prod",
+    "build:prod": "gulp build:prod",
+    "build:dev": "gulp build:dev",
     "start": "npm run server",
     "server": "gulp serve"
   },
