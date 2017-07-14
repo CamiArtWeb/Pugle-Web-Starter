@@ -1,11 +1,11 @@
-{
+var year = new Date().getFullYear();
+module.exports = {
   "name": "Camila San Miguel",
   "description": "Colorful art for a free mind.",
   "lang": "en_US",
   "author": "Camila San Miguel",
-  "copyright": "Copyright © 2017",
   "mainImage": "",
   "logo": "",
-  "twitter": ""
-
+  "twitter": "",
+  "baseUrl": "https://camilasanmiguel.space"
 }

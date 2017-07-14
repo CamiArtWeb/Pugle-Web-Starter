@@ -1,3 +1,10 @@
 {
-  "home": true
+  "home": true,
+  "title": "Visual & Written Arts",
+  "works": {
+    "paintings": "Color and textures",
+    "writings": "Words and poetry",
+    "sculptures": "Metal and wood",
+    "drawings": "Papers and pencil"
+  }
 }

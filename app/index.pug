@@ -1,1 +1,50 @@
 extends templates/base.pug
+
+prepend body
+  header#cover.shadow-bg
+    .cover
+    .shadow
+    .cover-heading
+      h1#sitetitle Camila San Miguel
+
+  
+append body
+  main#home
+    section.about
+      h2#xmargin Know the artist
+      include:commonmark index-about.md
+    section.works
+      h2 Discover her works
+      .mosaic
+        .mosaic-elem.highlight
+          a.shadow-bg.paintings(href="/paintings")
+            img.image(src="http://lorempixel.com/10/10" alt="")
+            .shadow
+            .text 
+              span #{page.works.paintings}
+              h3 Paintings
+        .mosaic-elem
+          a.shadow-bg.drawings(href="/drawings")
+            img.image(src="http://lorempixel.com/10/11" alt="")
+            .shadow
+            .text 
+              span #{page.works.drawings}
+              h3 Drawings
+        .mosaic-elem
+          a.shadow-bg.writings(href="/writings")
+            img.image(src="http://lorempixel.com/10/12" alt="")
+            .shadow
+            .text 
+              span #{page.works.writings}
+              h3 Writings
+        .mosaic-elem
+          a.shadow-bg.sculptures(href="/sculptures")
+            img.image(src="http://lorempixel.com/10/13" alt="")
+            .shadow
+            .text 
+              span #{page.works.sculptures}
+              h3 Sculptures
+    section.contact
+      h2 Get in touch now
+      include:commonmark index-contact.md
+      include templates/contactForm.pug 

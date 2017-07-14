@@ -11,6 +11,8 @@ import path from 'path';                         // Path-related tools
 import glob from 'glob';                         // Globbing
 import replace from 'replace';                   // Search-and-replace on files
 
+import child_process from 'child_process';
+
 import runSequence from 'run-sequence';          // Run sequences of tasks
 import browserSync from 'browser-sync';          // Sync browsers in development
 import workboxBuild from 'workbox-build';        // Service-Worker tools
@@ -19,6 +21,7 @@ import {output as pagespeed} from 'psi';         // Pagespeed Insights
 import gulpLoadPlugins from 'gulp-load-plugins'; // Easy loading of plugins
 const $ = gulpLoadPlugins();   
 
+var siteinfo = require('./app/siteinfo.js');
 var production = true;  // Enable favicon generation (requires internet)          
 // =============================================================================
 
@@ -52,9 +55,9 @@ gulp.task('images', () => {
     'app/images/**',
   ],{nodir: true })
   .pipe($.cached('images'))         // PIPE: Keeps cache for lazy reloading
-  .pipe($.if(                       // PIPE: Makes resized and webp versions
-    (filename) => ((filename+"").indexOf("-noresize")==-1),
-    $.responsive(responsiveConfig[0],responsiveConfig[1])))
+  // .pipe($.if(                       // PIPE: Makes resized and webp versions
+  //   (filename) => ((filename+"").indexOf("-noresize")==-1),
+  //   $.responsive(responsiveConfig[0],responsiveConfig[1])))
   .pipe($.imagemin([
     $.imagemin.gifsicle({interlaced: true}),
     $.imagemin.jpegtran({progressive: true}),
@@ -109,10 +112,9 @@ gulp.task('styles', () =>
 // =============================================================================
 gulp.task('scripts', () =>
   gulp.src([                          // SRC: Every client-side JS (must edit!)            
-    'app/scripts/main.js'                   // Google's Service-Worker tool
-    // Your JS files here
+    'app/scripts/**'
   ],{nodir: true })
-  .pipe($.newer('.tmp/scripts'))      // PIPE: Turn on 'scripts' cache
+  //.pipe($.newer('.tmp/scripts'))      // PIPE: Turn on 'scripts' cache
   .pipe($.sourcemaps.init())          // PIPE: Initialize sourcemap
     .pipe($.babel())                  // PIPE: Compile ES6 with Babel
     .pipe($.sourcemaps.write())       // PIPE: Write current sourcemap
@@ -132,8 +134,8 @@ gulp.task('scripts', () =>
 // DESC: Compile Pug->HTML, scan for assets to concatenate and minify html.
 // =============================================================================
 gulp.task('html', () => {
-  let siteinfo = require('./app/siteinfo.json');
   let htmlminConfig = require('./app/config/htmlmin.config.js');
+  let gitlogConfig = require('./app/config/gitlog.config.js');
   let favicons = production ? fs.readFileSync('./.tmp/favicon.html') : "";
   return gulp.src([               // SRC: Every Pug file not in root or templates
     'app/**/*.pug',             
@@ -147,23 +149,28 @@ gulp.task('html', () => {
       let f = "."                         // ...to get .json, relative to cmd
         + path.sep
         + path.relative(".",fne + ".json");
-      const thisFile = require(f);        // Load the json data for the page
-      t.through($.pug, [{                 // PIPE: through pug plugin wiht opts:
-        basename: "app",                      // - Root for extending templates
+      let thisFile = require(f);        // Load the json data for the page
+      return t.through($.pug, [{              // PIPE: through pug plugin wiht opts:
+        basedir: "app",                      // - Root for extending templates
         doctype: "html",                      // - Set doctype... Handy?
         locals: {                             // - Globals
-          siteinfo: siteinfo,                   // - Set siteinfo to global info
-          page: thisFile                        // - Set page to its json info
+          siteinfo: siteinfo,                     // - Set siteinfo to global info
+          page: thisFile,                         // - Set page to its json info
+          urlEnd: path.basename(file.path, ".pug")// - Provide Url info
         }
       }])
     }
   ))
-  .pipe($.rename({                // PIPE: Rename files 
-    extname: ".html"
-  }))
-  .pipe($.useref({                // PIPE: Scan files for concatenable assets
-    searchPath: '{.tmp,app}',
-    noAssets: true
+  .pipe($.rename((path)=>{        // PIPE: Rename all files
+    console.log(path.dirname);
+    path.extname = ".html";                       // - All pugs to html
+    path.dirname =                                // - All paths except / collapse
+      path.dirname.match(/.*index.html/)
+        ? path.dirname 
+        : path.dirname.replace(/(?:\/)(.*)\/\1/, '/$1')
+          .replace(/(^|\/)[^\/]+$/, '');
+    path.dirname = path.dirname                   // - Collapse /pages/
+      .replace(/pages($|\/)/,"");
   }))
   .pipe($.insert                  // PIPE: Insert favicon-related meta tags
     .transform((contents, file) =>
@@ -173,8 +180,18 @@ gulp.task('html', () => {
   ))
   .pipe($.save('html'))           // PIPE: Save Pipe for later use
     .pipe($.sitemap({               // PIPE: Generate sitemap
-      siteUrl: 'https://example.com',
-      lastmod: (f) => new Date(f.stat.mtime)
+      siteUrl: siteinfo.baseUrl,        // - Set base url
+      lastmod: function(f){                   // - Set lastmod date
+        let path = f.history[0];
+        let cmd = 'git log -n 1 --pretty=format:%at -- "' + path + '"';
+        let res = child_process.execSync(cmd).toString();
+        console.log(res);
+        if(res === "") throw "Error: Git does not have "+path;
+        return new Date(res);
+      }
+      ,
+      getLoc: (siteUrl, loc, entry) =>  // - Remove extension to html
+        loc.replace(/\.html$/, '')
     }))   
     .pipe(gulp.dest('./dist'))      // PIPE: Save sitemap to 'dist'
   .pipe($.save.restore('html'))     // PIPE: Restore old Pipe
@@ -219,13 +236,18 @@ gulp.task('serve', ['build:dev'], () => {
     notify: false,                    // Pop-up to let user know?
     logPrefix: 'BrowserSync',         // Console-logging prefix
     scrollElementMapping: ['main'],   // Sync scrollTop of specified elements
-    https: true,                      // Enable https? (selfsigned certificates)
-    server: ['.tmp', 'dist'],         // What to serve?
+    https: false,                      // Enable https? (selfsigned certificates)
+    server: {
+      baseDir: ['.tmp', 'dist'],         // What to serve?
+      serveStaticOptions: {
+        extensions: ['html']
+      }
+    },
     port: 3000                        // In which port?
   });
 
-  gulp.watch(['app/**/*.{pug,json}'],         // 1. On any Pug or JSON change...
-    ['html',browserSync.reload]);             // ... Reload its HTML
+  gulp.watch(['app/**.{pug,json}'],           // 1. On any Pug or JSON change...
+    ['html', browserSync.reload]);            // ... Reload its HTML
   gulp.watch(['app/styles/**/*.{scss,css}'],  // 2. On any styles change...
     ['styles', browserSync.reload]);          // ... Reload styles 
   gulp.watch(['app/scripts/**/*.js'],         // 3. On any scripts

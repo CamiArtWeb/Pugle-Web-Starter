@@ -1,0 +1,52 @@
+.mosaic{
+  margin:1rem 0;
+  display: flex;
+  flex-wrap:wrap;
+  color:white;
+  .image{
+    height: auto;
+    width:auto;
+    max-width: none;
+    max-height: none;
+    min-height: 100%;
+    min-width: 100%;
+    transform: translate3d(-50%,0,0);
+    margin-left: 50%;
+    position: absolute;
+    top:0;left:0;
+  }
+  .mosaic-elem{
+    position: relative;
+    margin: $border-width;
+    flex:1 0 40%;
+    overflow: hidden;
+    height: 15rem;
+    >*{height: 100%;}
+    @include media('>=tablet'){
+      flex:1 0 30%;
+      height: 20rem;
+      &.highlight{
+        flex: 1 0 100%;
+      }
+    }
+    @include media('>=tablet'){
+      height: 30rem;
+    }
+  }
+  .text{
+    position: absolute;
+    bottom: 0;
+    left:0;
+    width: 100%;
+    padding: .5rem;
+    font-family: $font-h;
+    font-weight: $font-h-light;
+    h3{
+      font-weight: $font-h-normal;
+    }
+    @include media('>=tablet'){
+      font-size: 1.5em;
+      padding: 1rem;
+    }
+  }
+}

@@ -1,0 +1,22 @@
+main {   
+  @include media('>=tablet'){
+    &:not(#home){
+      padding-top: 4rem;
+    }
+  }
+  > section{
+    padding: 1rem 1rem 2rem;
+    margin: 0 auto;
+    h2{
+      max-width: $linesize;
+      margin: 0 auto;
+    }
+    p, form{
+      max-width: $linesize;
+      // @include media('>phone'){
+      //   padding-left:0;
+      //   padding-right: 0;
+      // }
+    }
+  }
+}

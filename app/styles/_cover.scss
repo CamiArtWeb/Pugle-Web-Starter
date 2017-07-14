@@ -1,0 +1,24 @@
+.cover{
+  background: url(http://lorempixel.com/20/20) no-repeat center;
+  background-size: cover;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: -999;
+}
+.cover-heading{
+  position: absolute;
+  bottom: 0;
+  left:0;
+  width: 100%;
+  padding: 1rem 0;
+  color:white;
+  h1{
+    max-width: $linesize;
+    transition: margin .4s;
+  }
+  @include media('>=tablet'){
+    font-size: 1.3em;
+    padding: 2rem 0;
+  }
+}

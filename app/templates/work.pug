@@ -1,0 +1,17 @@
+extends base.pug
+  
+append body
+  main
+    section.about
+      h2#xmargin #{page.title}
+        br
+        small #{page.subtitle} by #{siteinfo.name}
+      block about
+        //- include:markdown-it #{page.aboutFile}
+    section.works
+      block works
+      
+    block contact
+      section.contact
+        h2 Get in touch now
+        include contactForm.pug 
