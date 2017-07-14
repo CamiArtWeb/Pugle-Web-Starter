@@ -162,7 +162,6 @@ gulp.task('html', () => {
     }
   ))
   .pipe($.rename((path)=>{        // PIPE: Rename all files
-    console.log(path.dirname);
     path.extname = ".html";                       // - All pugs to html
     path.dirname =                                // - All paths except / collapse
       path.dirname.match(/.*index.html/)
@@ -183,11 +182,10 @@ gulp.task('html', () => {
       siteUrl: siteinfo.baseUrl,        // - Set base url
       lastmod: function(f){                   // - Set lastmod date
         let path = f.history[0];
-        let cmd = 'git log -n 1 --pretty=format:%at -- "' + path + '"';
+        let cmd = 'git log -n 1 --pretty=format:%aI -- "' + path + '"';
         let res = child_process.execSync(cmd).toString();
-        console.log(res);
         if(res === "") throw "Error: Git does not have "+path;
-        return new Date(res);
+        return res;
       }
       ,
       getLoc: (siteUrl, loc, entry) =>  // - Remove extension to html
