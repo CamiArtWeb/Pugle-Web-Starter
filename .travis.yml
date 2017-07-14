@@ -2,7 +2,7 @@ sudo: false
 language: node_js
 node_js:
   - '8'
-script: npm run build
+script: git --version || npm run build
 env:
   - CXX=g++-4.8
 addons:
