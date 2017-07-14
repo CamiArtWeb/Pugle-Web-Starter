@@ -2,6 +2,7 @@ sudo: false
 language: node_js
 node_js:
   - '8'
+preinstall:
 script: git --version || npm run build
 env:
   - CXX=g++-4.8
@@ -9,8 +10,10 @@ addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
+    - git-core
     packages:
     - g++-4.8
+    - git
 deploy:
   local_dir: 'dist'
   provider: pages
