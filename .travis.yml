@@ -2,7 +2,9 @@ sudo: false
 language: node_js
 node_js:
   - '8'
-preinstall:
+cache:
+  directories:
+    - "node_modules"
 script: npm run build
 env:
   - CXX=g++-4.8

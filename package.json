@@ -68,5 +68,6 @@
   },
   "license": "Apache-2.0",
   "version": "0.8.0",
-  "name": "pugle-web-starter"
+  "name": "pugle-web-starter",
+  "repository": "MathiasSM/Pugle-Web-Starter"
 }

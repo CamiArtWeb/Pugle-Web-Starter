@@ -55,10 +55,10 @@ gulp.task('images', () => {
     'app/images/**',
   ],{nodir: true })
   .pipe($.cached('images'))         // PIPE: Keeps cache for lazy reloading
-  // .pipe($.if(                       // PIPE: Makes resized and webp versions
-  //   (filename) => ((filename+"").indexOf("-noresize")==-1),
-  //   $.responsive(responsiveConfig[0],responsiveConfig[1])))
-  .pipe($.imagemin([
+  .pipe($.if(                       // PIPE: Makes resized and webp versions
+    (filename) => ((filename+"").indexOf("-noresize")==-1),
+    $.responsive(responsiveConfig[0],responsiveConfig[1])))
+  .pipe($.imagemin([                // PIPE: Minimize every image
     $.imagemin.gifsicle({interlaced: true}),
     $.imagemin.jpegtran({progressive: true}),
     $.imagemin.optipng({optimizationLevel: 5}),
@@ -135,7 +135,6 @@ gulp.task('scripts', () =>
 // =============================================================================
 gulp.task('html', () => {
   let htmlminConfig = require('./app/config/htmlmin.config.js');
-  let gitlogConfig = require('./app/config/gitlog.config.js');
   let favicons = production ? fs.readFileSync('./.tmp/favicon.html') : "";
   return gulp.src([               // SRC: Every Pug file not in root or templates
     'app/**/*.pug',             
@@ -211,10 +210,12 @@ gulp.task('favicon', () => {
   return gulp.src("app/favicon.png")          // SRC: Source favicon image
   .pipe($.favicons(config))                   // PIPE: Generate Favicons
   .pipe(gulp.dest("dist"))                    // PIPE: Save to 'dist'
-  .pipe($.imagemin({                          // PIPE: Optimize all images
-    progressive: true,
-    interlaced: true
-  }))
+  .pipe($.imagemin([                // PIPE: Minimize every image
+    $.imagemin.gifsicle({interlaced: true}),
+    $.imagemin.jpegtran({progressive: true}),
+    $.imagemin.optipng({optimizationLevel: 5}),
+    $.imagemin.svgo({plugins: [{removeViewBox: true}]})
+  ]))
   .pipe($.size({title: 'favicons'}))          // PIPE: Report file size
 });
 
@@ -245,7 +246,7 @@ gulp.task('serve', ['build:dev'], () => {
     port: 3000                        // In which port?
   });
 
-  gulp.watch(['app/**.{pug,json}'],           // 1. On any Pug or JSON change...
+  gulp.watch(['app/**/*.{pug,json,md}'],      // 1. On any Pug or JSON change...
     ['html', browserSync.reload]);            // ... Reload its HTML
   gulp.watch(['app/styles/**/*.{scss,css}'],  // 2. On any styles change...
     ['styles', browserSync.reload]);          // ... Reload styles 
@@ -286,7 +287,7 @@ gulp.task('pagespeed', cb => {
 // =============================================================================
 gulp.task('generate-sw', () => {
   return workboxBuild.generateSW({
-    cacheId: 'puggle-web-starter',
+    cacheId: siteinfo.name,
     swDest: 'dist/sw.js',
     globDirectory: 'dist',
     // Add/remove glob patterns to match your directory setup.
