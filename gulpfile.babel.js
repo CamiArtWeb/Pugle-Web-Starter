@@ -162,11 +162,11 @@ gulp.task('html', () => {
   ))
   .pipe($.rename((path)=>{        // PIPE: Rename all files
     path.extname = ".html";                       // - All pugs to html
-    path.dirname =                                // - All paths except / collapse
-      path.dirname.match(/.*index.html/)
-        ? path.dirname 
-        : path.dirname.replace(/(?:\/)(.*)\/\1/, '/$1')
-          .replace(/(^|\/)[^\/]+$/, '');
+    // path.dirname =                                // - All paths except / collapse
+    //   path.dirname.match(/.*index.html/)
+    //     ? path.dirname 
+    //     : path.dirname.replace(/(?:\/)(.*)\/\1/, '/$1')
+    //       .replace(/(^|\/)[^\/]+$/, '');
     path.dirname = path.dirname                   // - Collapse /pages/
       .replace(/pages($|\/)/,"");
   }))
@@ -180,30 +180,29 @@ gulp.task('html', () => {
     .pipe($.sitemap({               // PIPE: Generate sitemap
       siteUrl: siteinfo.baseUrl,        // - Set base url
       lastmod: function(f){                   // - Set lastmod date
-        let path = [];
-        path.push(f.history[0]);                        // Pug file
-        path.push(f.history[0].replace(/\.pug$/,".md"));    // Markdown file
-        path.push(f.history[0].replace(/\.pug$/,".js"));    // JS data file
-        path.push(f.history[0].replace(/\.pug$/,".json"));  // Json data file
+        let file = [];
+        file.push(f.history[0]);                            // Pug file
+        file.push(f.history[0].replace(/\.pug$/,".md"));    // Markdown file
+        file.push(f.history[0].replace(/\.pug$/,".js"));    // JS data file
+        file.push(f.history[0].replace(/\.pug$/,".json"));  // Json data file
 
         let command   = 'git log -n 1 --pretty=format:%aI -- "@"';
         let res       = new Date(0); // Old date
         let numFiles  = 0;
-        for(let i=0;i<path.length;i++){
+        for(let i=0;i<file.length;i++){
           try{
-            let cmd  = command.replace(/@/, path[i]);
+            let cmd  = command.replace(/@/, file[i]);
             let res_ = child_process.execSync(cmd).toString();
-            if(res_==="") throw path[i];
+            if(res_==="") throw file[i].replace(path.resolve(__dirname),"");
             res_ = new Date(res_); 
             res = res<res_ ? res : res_;
-            console.log(res_);
             numFiles++;
           }
           catch(e){
-            console.log("[INFO] Git does not have "+e)
+            //console.log("[INFO] Git does not have "+e)
           }
         }
-        if(numFiles===0) throw "[ERROR] No file in git for "+path[0];
+        if(numFiles===0) throw "[ERROR] No file in git for "+file[0];
         return res;
       }
       ,
@@ -311,10 +310,10 @@ gulp.task('generate-sw', () => {
     globDirectory: 'dist',
     // Add/remove glob patterns to match your directory setup.
     globPatterns: [
-      'images/**/*',
+      'images/**',
       'scripts/**/*.js',
       'styles/**/*.css',
-      '**.{html,json}'
+      '**/*.{html,json}'
     ],
     modifyUrlPrefix: {
       'dist/': ''
