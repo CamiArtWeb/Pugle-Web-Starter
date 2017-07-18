@@ -180,11 +180,30 @@ gulp.task('html', () => {
     .pipe($.sitemap({               // PIPE: Generate sitemap
       siteUrl: siteinfo.baseUrl,        // - Set base url
       lastmod: function(f){                   // - Set lastmod date
-        let path = f.history[0];
-        let cmd = 'git log -n 1 --pretty=format:%aI -- "' + path + '"';
-        let res = child_process.execSync(cmd).toString();
-        if(res === "") throw "Error: Git does not have "+path;
-        console.log(res);
+        let path = [];
+        path.push(f.history[0]);                        // Pug file
+        path.push(f.history[0].replace(/\.pug$/,".md"));    // Markdown file
+        path.push(f.history[0].replace(/\.pug$/,".js"));    // JS data file
+        path.push(f.history[0].replace(/\.pug$/,".json"));  // Json data file
+
+        let command   = 'git log -n 1 --pretty=format:%aI -- "@"';
+        let res       = new Date(0); // Old date
+        let numFiles  = 0;
+        for(let i=0;i<path.length;i++){
+          try{
+            let cmd  = command.replace(/@/, path[i]);
+            let res_ = child_process.execSync(cmd).toString();
+            if(res_==="") throw path[i];
+            res_ = new Date(res_); 
+            res = res<res_ ? res : res_;
+            console.log(res_);
+            numFiles++;
+          }
+          catch(e){
+            console.log("[INFO] Git does not have "+e)
+          }
+        }
+        if(numFiles===0) throw "[ERROR] No file in git for "+path[0];
         return res;
       }
       ,
