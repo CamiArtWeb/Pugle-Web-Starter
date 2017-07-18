@@ -18,28 +18,48 @@ append body
       .mosaic
         .mosaic-elem.highlight
           a.shadow-bg.paintings(href="/paintings")
-            img.image(src="http://lorempixel.com/10/10" alt="")
+            .image.lazyImage.replace
+              img(src="/images/image2-blur.jpg" alt="" 
+                      data-src="/images/image2-1400px.jpg"
+                      data-srcset="/images/image2-350px.jpg 350w, /images/image2-700px.jpg 700w, /images/image2-1400px.jpg 1400w, /images/image2-2800px.jpg 2800w, /images/image2-5600px.jpg 5600w"
+                      data-sizes="(min-width: 320px) 100vw, 50vw"
+                      class="preview")
             .shadow
             .text 
               span #{page.works.paintings}
               h3 Paintings
         .mosaic-elem
           a.shadow-bg.drawings(href="/drawings")
-            img.image(src="http://lorempixel.com/10/11" alt="")
+            .image.lazyImage.replace
+              img(src="/images/image3-blur.jpg" alt="" 
+                      data-src="/images/image3-1400px.jpg"
+                      data-srcset="/images/image3-350px.jpg 350w, /images/image3-700px.jpg 700w, /images/image3-1400px.jpg 1400w, /images/image3-2800px.jpg 2800w, /images/image3-5600px.jpg 5600w"
+                      data-sizes="(min-width: 320px) 33vw, 50vw"
+                      class="preview")
             .shadow
             .text 
               span #{page.works.drawings}
               h3 Drawings
         .mosaic-elem
           a.shadow-bg.writings(href="/writings")
-            img.image(src="http://lorempixel.com/10/12" alt="")
+            .image.lazyImage.replace
+              img(src="/images/image4-blur.jpg" alt="" 
+                      data-src="/images/image4-1400px.jpg"
+                      data-srcset="/images/image4-350px.jpg 350w, /images/image4-700px.jpg 700w, /images/image4-1400px.jpg 1400w, /images/image4-2800px.jpg 2800w, /images/image4-5600px.jpg 5600w"
+                      data-sizes="(min-width: 320px) 33vw, 50vw"
+                      class="preview")
             .shadow
             .text 
               span #{page.works.writings}
               h3 Writings
         .mosaic-elem
           a.shadow-bg.sculptures(href="/sculptures")
-            img.image(src="http://lorempixel.com/10/13" alt="")
+            .image.lazyImage.replace
+              img(src="/images/image5-blur.jpg" alt="" 
+                      data-src="/images/image5-1400px.jpg"
+                      data-srcset="/images/image5-350px.jpg 350w, /images/image5-700px.jpg 700w, /images/image5-1400px.jpg 1400w, /images/image5-2800px.jpg 2800w, /images/image5-5600px.jpg 5600w"
+                      data-sizes="(min-width: 320px) 33vw, 50vw"
+                      class="preview")
             .shadow
             .text 
               span #{page.works.sculptures}

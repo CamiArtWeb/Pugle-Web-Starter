@@ -51,7 +51,7 @@ gulp.task('lint', () =>
 // =============================================================================
 gulp.task('images', () => {
   let responsiveConfig = require('./app/config/responsive.config.js');
-  gulp.src([                        // SRC: Everything in 'images'
+  return gulp.src([                 // SRC: Everything in 'images'
     'app/images/**',
   ],{nodir: true })
   .pipe($.cached('images'))         // PIPE: Keeps cache for lazy reloading

@@ -26,14 +26,14 @@ if (window.addEventListener
   }
 
   function loadFullImage(item) {
-    if (!item || !item.dataset.src) return;
+    if(!item.querySelector) return; // Not compatible
+    let imgTag = item.querySelector('img.preview');
+    if (!item || !imgTag.dataset) return;
 
     let img = new Image();
-    if (item.dataset) {
-      img.srcset = item.dataset.srcset || '';
-      img.sizes = item.dataset.sizes || '';
-    }
-    img.src = item.dataset.src;
+    img.srcset = imgTag.dataset.srcset || '';
+    img.sizes = imgTag.dataset.sizes || '';
+    img.src = imgTag.dataset.src;
     img.className = 'reveal';
     if(img.complete)  addImg();
     else img.onload = addImg;
