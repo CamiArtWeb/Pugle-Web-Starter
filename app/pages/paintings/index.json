@@ -1,4 +1,5 @@
 {
   "title": "Color and textures",
-  "subtitle": "Paintings"
+  "subtitle": "Paintings",
+  "works": [1,2,3,4,5,6]
 }

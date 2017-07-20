@@ -6,27 +6,27 @@ module.exports = [
       { width:30,                         // SIZE: Blur. Fast blurred images.
         rename: {suffix:'-blur'}},
       { width:350,                        // SIZE: Tiny.
-        rename: {suffix:'-350px'}},
+        rename: {suffix:'-350w'}},
       { width:350,                        // SIZE: TinySquared. Small Thumbs
         height:350, 
-        rename: {suffix:'-350px-thumb'},  
+        rename: {suffix:'-350w-thumb'},  
         crop:"centre" },
       { width:700,                        // SIZE: Small. Small Phone
-        rename: {suffix:'-700px'}},
+        rename: {suffix:'-700w'}},
       { width:700,                        
-        rename: {suffix:'-700px',  extname: '.webp'}},
+        rename: {suffix:'-700w',  extname: '.webp'}},
       { width:1400,                       // SIZE: Medium. Big Phone/Small laptop
-        rename: {suffix:'-1400px'}},
+        rename: {suffix:'-1400w'}},
       { width:1400,                       
-        rename: {suffix:'-1400px', extname: '.webp'}},
+        rename: {suffix:'-1400w', extname: '.webp'}},
       { width:2800,                       // SIZE: Large. Retina small
-        rename: {suffix:'-2800'}},
+        rename: {suffix:'-2800w'}},
       { width:2800,                       
-        rename: {suffix:'-2800px', extname: '.webp'}},
+        rename: {suffix:'-2800w', extname: '.webp'}},
       { width:5600,                       // SIZE: XLarge. Retina large
-        rename: {suffix:'-5600px'}},
+        rename: {suffix:'-5600w'}},
       { width:5600,                       
-        rename: {suffix:'-5600px', extname: '.webp'}},
+        rename: {suffix:'-5600w', extname: '.webp'}},
       {                                   // SIZE: Original. 
         rename: {suffix: '-original'} 
       }

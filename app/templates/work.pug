@@ -10,6 +10,39 @@ append body
         //- include:markdown-it #{page.aboutFile}
     section.works
       block works
+        .gallery
+          each elem, i in page.works ? page.works : []
+            .gallery-elem
+              .image
+                a(href="#").container
+                  .lazyImage.replace
+                    - 
+                      let base = "/images/"
+                      let image = {};
+                      image.blur  = base + "image" + (i+1) + "-blur.jpg";
+                      image.w350  = base + "image" + (i+1) + "-350w.jpg";
+                      image.w700  = base + "image" + (i+1) + "-700w.jpg";
+                      image.w1400 = base + "image" + (i+1) + "-1400w.jpg";
+                      image.w2800 = base + "image" + (i+1) + "-2800w.jpg";
+                      image.w5600 = base + "image" + (i+1) + "-5600w.jpg";
+                      image.dataset = image.w350  + " 350w, "
+                                      + image.w700  + " 700w, "
+                                      + image.w1400 + " 1400w, "
+                                      + image.w2800 + " 2800w, "
+                                      + image.w5600 + " 5600w";
+                    img.preview(
+                      src=image.blur alt="" 
+                      data-src=image.w1400
+                      data-srcset=image.dataset
+                      data-sizes="(min-width: 320px) 75vw, 50vw")
+              a(href="#").text 
+                h3 Title of this
+                  br
+                  small Oil on Canvas 30x40
+          else
+            .gallery-elem
+              span There are no artworks here.
+              span That might have been a mistake.
       
     block contact
       section.contact
